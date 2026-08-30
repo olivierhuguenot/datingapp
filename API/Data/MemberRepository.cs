@@ -13,8 +13,11 @@ public class MemberRepository(AppDbContext context) : IMemberRepository
 
     public async Task<Member?> GetMemberForUpdate(string id)
     {
+        // Include() Instructs EF to execute a SQL Join to load Navigation Properties User and Photo
+        // SingleOrDefualt executes the query (0 match -> returns null, 1 match -> returns member, 1+ matches -> returns InvalidOperationException)
         return await context.Members
             .Include(x => x.User)
+            .Include(x => x.Photos)
             .SingleOrDefaultAsync(x => x.Id == id);
     }
 
